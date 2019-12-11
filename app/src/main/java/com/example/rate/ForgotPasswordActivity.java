@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
     EditText emailId;
-    Button btnSend;
+    Button btnSend, btnBack;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -25,6 +25,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
         firebaseAuth = firebaseAuth.getInstance();
         btnSend = findViewById(R.id.button4);
+        btnBack = findViewById(R.id.button10);
         emailId = findViewById(R.id.editText6);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +50,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

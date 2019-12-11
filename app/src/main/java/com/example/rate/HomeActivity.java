@@ -12,8 +12,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
-    Button btnRate, btnSearch;
-    TextView tvLogOut;
+    Button btnRate, btnSearch, btnLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +21,7 @@ public class HomeActivity extends AppCompatActivity {
         firebaseAuth = firebaseAuth.getInstance();
         btnSearch = findViewById(R.id.button5);
         btnRate = findViewById(R.id.button3);
-        tvLogOut = findViewById(R.id.textView3);
+        btnLogout = findViewById(R.id.button8);
 
         btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        tvLogOut.setOnClickListener(new View.OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
