@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class SignUpActivity extends AppCompatActivity {
     EditText emailId, password, vPassword;
-    Button btnSignUp;
+    Button btnSignUp, btnBack;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -30,7 +30,7 @@ public class SignUpActivity extends AppCompatActivity {
         emailId = findViewById(R.id.editText);
         password = findViewById(R.id.editText4);
         vPassword = findViewById(R.id.editText5);
-
+        btnBack = findViewById(R.id.button6);
         btnSignUp = findViewById(R.id.button2);
 
         /*
@@ -67,6 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
                                     Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
                                 } else {
                                     startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
+                                    finish();
                                 }
                             }
                         });
@@ -76,6 +77,13 @@ public class SignUpActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(SignUpActivity.this, "אירעה תקלה!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
