@@ -33,7 +33,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         btnSignUp = findViewById(R.id.button2);
 
-        /**
+        /*
          * this method checks the email and password given by the user, if all the parameters meet,
          * it creates a user. otherwise, the user has to input valid parameters or occurred a system error.
          */
@@ -47,28 +47,24 @@ public class SignUpActivity extends AppCompatActivity {
                     emailId.setError("אנא הכנס מייל!");
                     emailId.requestFocus();
                 }
-                if (strPassword.isEmpty()) {
-                    password.setError("אנא הכנס סיסמא!");
-                    password.requestFocus();
-                }
                 if (strvPassword.isEmpty()) {
                     vPassword.setError("אנא הכנס את סיסמא בשנית!");
-                    vPassword.requestFocus();
-                }
-                if(strPassword.length()<6){
-                    password.setError("סיסמא חייבת להכיל 6 תווים ומעלה.");
                     password.requestFocus();
                 }
-                else if (strEmail.isEmpty() && strPassword.isEmpty() && strvPassword.isEmpty()) {
-                    Toast.makeText(SignUpActivity.this, "השדות ריקים!", Toast.LENGTH_SHORT).show();
-
-                } else if (!(strEmail.isEmpty() && strPassword.isEmpty() && strvPassword.isEmpty())) {
+                if (strPassword.isEmpty()) {
+                    password.setError("אנא הכנס סיסמא!");
+                    vPassword.requestFocus();
+                } else if (strPassword.length() < 6) {
+                    Toast.makeText(SignUpActivity.this, "סיסמא חייבת להכיל 6 תווים ומעלה.", Toast.LENGTH_SHORT).show();
+                    password.requestFocus();
+                } else if (!(strEmail.isEmpty() && strvPassword.isEmpty())) {
+                    //checks if the password and the verify password are equal.
                     if (strPassword.equals(strvPassword)) {
                         firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (!task.isSuccessful()) {
-                                    Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
                                 } else {
                                     startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
                                 }

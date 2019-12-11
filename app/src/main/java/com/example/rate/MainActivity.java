@@ -56,26 +56,18 @@ public class MainActivity extends AppCompatActivity {
                     password.setError("אנא הכנס סיסמא!");
                     password.requestFocus();
                 }
-                //if the email and the password edit texts are empty.
-//                else if (strEmail.isEmpty() && strPassword.isEmpty()) {
-//                    Toast.makeText(MainActivity.this, "השדות ריקים!", Toast.LENGTH_SHORT).show();
-//
-//                }
                 //if the email and the password edit texts are filled.
-                else if (!(strEmail.isEmpty() && strPassword.isEmpty())) {
-
+                else if (!(strEmail.isEmpty())) {
                     firebaseAuth.signInWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //there was a problem with the parameters.
                             if (!task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "ההתחברות כשלה, נסה שוב.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                            //the parameters were valid, transfer to the home page.
+                            //the parameters were valid, sign in successfully.
                             else {
-                                Toast.makeText(MainActivity.this, "בוא נראה אם רואים אותי!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                                finish();
+                                Toast.makeText(MainActivity.this, "התחברת בהצלחה!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -92,14 +84,12 @@ public class MainActivity extends AppCompatActivity {
         asListener = new FirebaseAuth.AuthStateListener() {
 
             /**
-             * this method checks if the user exists. if it does
-             * @param firebaseAuth
+             * this method checks if the user exists. if it does it goes to the home page. otherwise, goes to the main page and request a login.
              */
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser fbUser = firebaseAuth.getCurrentUser();
                 if (fbUser != null) {
-                    Toast.makeText(MainActivity.this, "התחברת בהצלחה!", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(MainActivity.this, HomeActivity.class);
                     startActivity(i);
                     finish();
