@@ -22,6 +22,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try
+        {
+            this.getSupportActionBar().hide();
+        }
+        catch (NullPointerException e){}
         setContentView(R.layout.activity_forgot_password);
         firebaseAuth = firebaseAuth.getInstance();
         btnSend = findViewById(R.id.button4);
