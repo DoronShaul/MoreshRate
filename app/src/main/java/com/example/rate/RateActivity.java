@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -27,11 +28,10 @@ public class RateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try
-        {
+        try {
             this.getSupportActionBar().hide();
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e){}
         setContentView(R.layout.activity_rate);
         firebaseAuth = firebaseAuth.getInstance();
         btnBack = findViewById(R.id.button7);
@@ -39,8 +39,22 @@ public class RateActivity extends AppCompatActivity {
         lvCourses = (ListView) findViewById(R.id.listView);
         firebaseDatabase = firebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("courses");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.courses_info,R.id.textView3, courses);
+        courses.add("A");
+        courses.add("B");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, courses);
         lvCourses.setAdapter(adapter);
+
+
+        lvCourses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object o = parent.getItemAtPosition(position);
+                String courseName = o.toString();
+                Intent i = new Intent(RateActivity.this, Rate2Activity.class);
+                i.putExtra("courseName",courseName);
+                startActivity(i);
+            }
+        });
 
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override

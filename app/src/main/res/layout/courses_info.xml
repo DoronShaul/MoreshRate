@@ -6,7 +6,8 @@
     <TextView
         android:id="@+id/textView3"
         android:textSize="30sp"
-        android:textStyle="bold"
+        android:textStyle="italic"
+        android:textColor="#FAFAFA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
