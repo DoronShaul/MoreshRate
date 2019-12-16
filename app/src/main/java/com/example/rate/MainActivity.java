@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //hides action bar.
         try
         {
             this.getSupportActionBar().hide();
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
             /**
              * this method checks the email and password given by the user, if all the parameters meet,
-             * the database will check if thw user exists. otherwise, there was a problem with the parameters.
+             * the database will check if the user exists. otherwise, there was a problem with the parameters.
              */
             @Override
             public void onClick(View v) {
@@ -91,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         asListener = new FirebaseAuth.AuthStateListener() {
-
             /**
              * this method checks if the user exists. if it does it goes to the home page. otherwise, goes to the main page and request a login.
              */
@@ -107,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
+        /**
+         * this method goes to the sign up activity.
+         */
         tvSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +118,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method goes to the forgot password activity.
+         */
         tvForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

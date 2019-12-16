@@ -28,6 +28,7 @@ public class RateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //hides the action bar.
         try {
             this.getSupportActionBar().hide();
         } catch (NullPointerException e) {
@@ -45,17 +46,23 @@ public class RateActivity extends AppCompatActivity {
         lvCourses.setAdapter(adapter);
 
 
+        /**
+         * this method takes the user to the rate2 activity after clicking an item in the list view.
+         */
         lvCourses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Object o = parent.getItemAtPosition(position);
-                String courseName = o.toString();
+                Object item = parent.getItemAtPosition(position);
+                String courseName = item.toString();
                 Intent i = new Intent(RateActivity.this, Rate2Activity.class);
                 i.putExtra("courseName",courseName);
                 startActivity(i);
             }
         });
 
+        /**
+         * this method takes the user to the main activity after clicking the logout button.
+         */
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +79,9 @@ public class RateActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method takes the user back to the last activity.
+         */
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

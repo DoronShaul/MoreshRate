@@ -22,6 +22,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //hides the action bar.
         try
         {
             this.getSupportActionBar().hide();
@@ -58,6 +59,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method takes the user back to the last activity.
+         */
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,15 +1,17 @@
-public class ratings {
+package com.example.rate;
+
+public class Ratings {
     private String courseID;
     private String courseName;
     private int teacherRating;
     private int courseRating;
     private int testRating;
 
-    public ratings() {
+    public Ratings() {
 
     }
 
-    public ratings(String id, String name, int teacher, int course, int test){
+    public Ratings(String id, String name, int teacher, int course, int test){
         this.courseID=id;
         this.courseName=name;
         this.courseRating=course;

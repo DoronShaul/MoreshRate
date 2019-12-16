@@ -156,8 +156,8 @@
             android:textSize="20dp" />
     </RadioGroup>
 
-    <EditText
-        android:id="@+id/editText7"
+    <TextView
+        android:id="@+id/textView5"
         android:layout_width="77dp"
         android:layout_height="39dp"
         android:layout_marginTop="115dp"
@@ -174,8 +174,8 @@
         app:layout_constraintStart_toEndOf="@+id/ratingBar"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-    <EditText
-        android:id="@+id/editText8"
+    <TextView
+        android:id="@+id/textView6"
         android:layout_width="77dp"
         android:layout_height="39dp"
         android:layout_marginTop="165dp"
@@ -192,8 +192,8 @@
         app:layout_constraintStart_toEndOf="@+id/ratingBar"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-    <EditText
-        android:id="@+id/editText9"
+    <TextView
+        android:id="@+id/textView7"
         android:layout_width="77dp"
         android:layout_height="39dp"
         android:layout_marginTop="215dp"
@@ -210,8 +210,8 @@
         app:layout_constraintStart_toEndOf="@+id/ratingBar"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-    <EditText
-        android:id="@+id/editText10"
+    <TextView
+        android:id="@+id/textView8"
         android:layout_width="77dp"
         android:layout_height="39dp"
         android:layout_marginTop="268dp"

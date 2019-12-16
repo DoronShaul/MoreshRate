@@ -38,7 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.button6);
         btnSignUp = findViewById(R.id.button2);
 
-        /*
+        /**
          * this method checks the email and password given by the user, if all the parameters meet,
          * it creates a user. otherwise, the user has to input valid parameters or occurred a system error.
          */
@@ -85,6 +85,9 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method takes the user back to the last activity.
+         */
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

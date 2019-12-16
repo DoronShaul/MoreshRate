@@ -17,6 +17,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //hides the action bar.
         try
         {
             this.getSupportActionBar().hide();
@@ -28,6 +29,9 @@ public class HomeActivity extends AppCompatActivity {
         btnRate = findViewById(R.id.button3);
         btnLogout = findViewById(R.id.button8);
 
+        /**
+         * this method takes the user to the rate activity after clicking the rate button.
+         */
         btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,6 +40,9 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method takes the user to the search activity after clicking the search button.
+         */
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,6 +51,9 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method takes the user to the main activity after clicking the logout button.
+         */
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
