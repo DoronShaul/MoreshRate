@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class Rate2Activity extends AppCompatActivity {
     String courseName;
@@ -31,7 +32,7 @@ public class Rate2Activity extends AppCompatActivity {
     RadioGroup rgAttendance;
     RadioButton rbtnYes, rbtnNo;
     FirebaseDatabase mDatabase;
-    DatabaseReference drRating, drCourses;
+    DatabaseReference drRating, drCourses, dr;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -62,6 +63,8 @@ public class Rate2Activity extends AppCompatActivity {
             courseName = b.getString("courseName");
             tvCourse.setText(courseName);
         }
+        dr = mDatabase.getReference("courses").child(courseName).child("courseID");
+
 
 
         btnRate.setOnClickListener(new View.OnClickListener() {
@@ -70,26 +73,11 @@ public class Rate2Activity extends AppCompatActivity {
                 if (rgAttendance.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(Rate2Activity.this, "נא לסמן האם יש נוכחות בקורס זה!", Toast.LENGTH_SHORT).show();
                 } else {
-                    Query cID = drCourses.orderByChild("courseName").equalTo(courseName);
-                    cID.addChildEventListener(new ChildEventListener() {
+                    dr.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                            Toast.makeText(Rate2Activity.this, dataSnapshot.getValue().toString(),Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                        }
-
-                        @Override
-                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                        }
-
-                        @Override
-                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            final Ratings rat = new Ratings(""+dataSnapshot.getValue(Integer.class), courseName, (int)rbTeacher.getRating(), (int)rbCourse.getRating(), (int)rbTest.getRating());
+                            drRating.push().setValue(rat);
                         }
 
                         @Override
@@ -97,8 +85,12 @@ public class Rate2Activity extends AppCompatActivity {
 
                         }
                     });
-                    //final Ratings newRating = new Ratings(id, courseName, rbTeacher.getNumStars(), rbCourse.getNumStars(), rbTest.getNumStars());
                 }
+
+                Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(Rate2Activity.this, HomeActivity.class);
+                startActivity(i);
+                finish();
             }
         });
 
