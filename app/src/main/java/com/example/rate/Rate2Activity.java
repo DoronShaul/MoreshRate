@@ -32,7 +32,7 @@ public class Rate2Activity extends AppCompatActivity {
     RadioGroup rgAttendance;
     RadioButton rbtnYes, rbtnNo;
     FirebaseDatabase mDatabase;
-    DatabaseReference drRating, drCourses, dr;
+    DatabaseReference drRating, drCourses, drCourseId;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -41,6 +41,7 @@ public class Rate2Activity extends AppCompatActivity {
         try {
             this.getSupportActionBar().hide();
         } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         firebaseAuth = firebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance();
@@ -63,7 +64,7 @@ public class Rate2Activity extends AppCompatActivity {
             courseName = b.getString("courseName");
             tvCourse.setText(courseName);
         }
-        dr = mDatabase.getReference("courses").child(courseName).child("courseID");
+        drCourseId = mDatabase.getReference("courses").child(courseName).child("courseID");
 
 
 
@@ -73,7 +74,7 @@ public class Rate2Activity extends AppCompatActivity {
                 if (rgAttendance.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(Rate2Activity.this, "נא לסמן האם יש נוכחות בקורס זה!", Toast.LENGTH_SHORT).show();
                 } else {
-                    dr.addValueEventListener(new ValueEventListener() {
+                    drCourseId.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             final Ratings rat = new Ratings(""+dataSnapshot.getValue(Integer.class), courseName, (int)rbTeacher.getRating(), (int)rbCourse.getRating(), (int)rbTest.getRating());
@@ -98,7 +99,7 @@ public class Rate2Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    firebaseAuth.getInstance().signOut();
+                    firebaseAuth.signOut();
                     Intent i = new Intent(Rate2Activity.this, MainActivity.class);
                     //terminates all activities on the stack.
                     finishAffinity();
