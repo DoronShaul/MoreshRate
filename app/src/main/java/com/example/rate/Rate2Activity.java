@@ -32,7 +32,7 @@ public class Rate2Activity extends AppCompatActivity {
     RadioGroup rgAttendance;
     RadioButton rbtnYes, rbtnNo;
     FirebaseDatabase mDatabase;
-    DatabaseReference drRating, drCourses, drCourseId;
+    DatabaseReference drRating, drCourses;
     FirebaseAuth firebaseAuth;
 
     @Override
@@ -64,9 +64,6 @@ public class Rate2Activity extends AppCompatActivity {
             courseName = b.getString("courseName");
             tvCourse.setText(courseName);
         }
-        drCourseId = mDatabase.getReference("courses").child(courseName).child("courseID");
-
-
 
         btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,24 +71,14 @@ public class Rate2Activity extends AppCompatActivity {
                 if (rgAttendance.getCheckedRadioButtonId() == -1) {
                     Toast.makeText(Rate2Activity.this, "נא לסמן האם יש נוכחות בקורס זה!", Toast.LENGTH_SHORT).show();
                 } else {
-                    drCourseId.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            final Ratings rat = new Ratings(""+dataSnapshot.getValue(Integer.class), courseName, (int)rbTeacher.getRating(), (int)rbCourse.getRating(), (int)rbTest.getRating());
-                            drRating.push().setValue(rat);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
+                    //creates a new ratings for the selected course and push it to the database.
+                    Ratings rat = new Ratings(courseName, (int)rbTeacher.getRating(), (int)rbCourse.getRating(), (int)rbTest.getRating());
+                    drRating.push().setValue(rat);
+                    Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(Rate2Activity.this, HomeActivity.class);
+                    startActivity(i);
+                    finish();
                 }
-
-                Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(Rate2Activity.this, HomeActivity.class);
-                startActivity(i);
-                finish();
             }
         });
 

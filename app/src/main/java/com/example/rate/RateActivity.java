@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,6 +26,8 @@ public class RateActivity extends AppCompatActivity {
     Button btnBack, btnLogout;
     ListView lvCourses;
     ArrayList<String> courses = new ArrayList<>();
+    ArrayAdapter<String> adapter;
+    EditText etSearch;
 
 
     @Override
@@ -38,13 +43,31 @@ public class RateActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.button7);
         btnLogout = findViewById(R.id.button9);
         lvCourses = (ListView) findViewById(R.id.listView);
+        etSearch = (EditText) findViewById(R.id.editText7);
         firebaseDatabase = firebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("courses");
         courses.add("A");
         courses.add("B");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, courses);
+
+        adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, courses);
         lvCourses.setAdapter(adapter);
 
+        etSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                (RateActivity.this).adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         /**
          * this method takes the user to the rate2 activity after clicking an item in the list view.
@@ -55,7 +78,7 @@ public class RateActivity extends AppCompatActivity {
                 Object item = parent.getItemAtPosition(position);
                 String courseName = item.toString();
                 Intent i = new Intent(RateActivity.this, Rate2Activity.class);
-                i.putExtra("courseName",courseName);
+                i.putExtra("courseName", courseName);
                 startActivity(i);
             }
         });
