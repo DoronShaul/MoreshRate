@@ -76,7 +76,7 @@
         android:layout_marginTop="109dp"
         android:layout_marginEnd="116dp"
         android:layout_marginRight="116dp"
-        android:rating="3"
+        android:rating="0"
         android:scaleX="0.8"
         android:scaleY="0.8"
         android:stepSize="1"
@@ -94,7 +94,7 @@
         android:layout_marginTop="159dp"
         android:layout_marginEnd="116dp"
         android:layout_marginRight="116dp"
-        android:rating="3"
+        android:rating="0"
         android:scaleX="0.8"
         android:scaleY="0.8"
         android:stepSize="1"
@@ -112,7 +112,7 @@
         android:layout_marginTop="209dp"
         android:layout_marginEnd="116dp"
         android:layout_marginRight="116dp"
-        android:rating="3"
+        android:rating="0"
         android:scaleX="0.8"
         android:scaleY="0.8"
         android:stepSize="1"
@@ -120,41 +120,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
-
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="147dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="285dp"
-        android:layout_marginLeft="285dp"
-        android:layout_marginTop="271dp"
-        android:layout_marginEnd="130dp"
-        android:layout_marginRight="130dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.958"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5">
-
-        <RadioButton
-            android:id="@+id/radioButton5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:buttonTint="#FAFAFA"
-            android:text="לא"
-            android:textColor="#FAFAFA"
-            android:textSize="20dp" />
-
-        <RadioButton
-            android:id="@+id/radioButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:buttonTint="#FAFAFA"
-            android:text="כן"
-            android:textColor="#FAFAFA"
-            android:textSize="20dp" />
-    </RadioGroup>
 
     <TextView
         android:id="@+id/textView5"
@@ -210,38 +175,41 @@
         app:layout_constraintStart_toEndOf="@+id/ratingBar"
         app:layout_constraintTop_toBottomOf="@+id/imageView5" />
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="77dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="268dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginRight="60dp"
-        android:background="@android:color/transparent"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="נוכחות"
-        android:textColor="#FAFAFA"
-        android:textSize="25dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ratingBar"
-        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
-
     <Button
         android:id="@+id/button13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="162dp"
         android:layout_marginLeft="162dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="162dp"
         android:layout_marginRight="162dp"
-        android:text="דרג"
         android:backgroundTint="#FAFAFA"
+        android:text="דרג"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/editText8" />
+
+    <EditText
+        android:id="@+id/editText8"
+        android:layout_width="301dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:background="#FAFAFA"
+        android:backgroundTint="#FAFAFA"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="הוסף תגובה (אופציונלי)"
+        android:inputType="textMultiLine"
+        android:textColorHint="#A4A4A4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ratingBar2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

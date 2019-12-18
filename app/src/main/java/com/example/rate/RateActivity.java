@@ -1,5 +1,7 @@
 package com.example.rate;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,13 +13,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class RateActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
@@ -28,7 +37,7 @@ public class RateActivity extends AppCompatActivity {
     ArrayList<String> courses = new ArrayList<>();
     ArrayAdapter<String> adapter;
     EditText etSearch;
-
+    ValueEventListener vel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +55,8 @@ public class RateActivity extends AppCompatActivity {
         etSearch = (EditText) findViewById(R.id.editText7);
         firebaseDatabase = firebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("courses");
-        courses.add("A");
-        courses.add("B");
-
+        etSearch.requestFocus();
+        
         adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, courses);
         lvCourses.setAdapter(adapter);
 
@@ -65,6 +73,21 @@ public class RateActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        vel = databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                while (it.hasNext()) {
+                    courses.add(it.next().child("courseName").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -111,7 +134,6 @@ public class RateActivity extends AppCompatActivity {
                 finish();
             }
         });
-
 
     }
 }

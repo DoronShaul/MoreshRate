@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
@@ -27,10 +29,9 @@ import com.google.firebase.database.ValueEventListener;
 public class Rate2Activity extends AppCompatActivity {
     String courseName;
     TextView tvCourse;
+    EditText etComment;
     Button btnBack, btnLogout, btnRate;
     RatingBar rbCourse, rbTeacher, rbTest;
-    RadioGroup rgAttendance;
-    RadioButton rbtnYes, rbtnNo;
     FirebaseDatabase mDatabase;
     DatabaseReference drRating, drCourses;
     FirebaseAuth firebaseAuth;
@@ -49,15 +50,13 @@ public class Rate2Activity extends AppCompatActivity {
         drRating = mDatabase.getReference("ratings");
         setContentView(R.layout.activity_rate2);
         tvCourse = findViewById(R.id.textView4);
+        etComment = findViewById(R.id.editText8);
         btnBack = findViewById(R.id.button12);
         btnLogout = findViewById(R.id.button11);
         btnRate = findViewById(R.id.button13);
         rbCourse = findViewById(R.id.ratingBar);
         rbTeacher = findViewById(R.id.ratingBar1);
         rbTest = findViewById(R.id.ratingBar2);
-        rgAttendance = findViewById(R.id.radioGroup);
-        rbtnNo = findViewById(R.id.radioButton5);
-        rbtnYes = findViewById(R.id.radioButton4);
         Intent i = getIntent();
         Bundle b = i.getExtras();
         if (b != null) {
@@ -68,16 +67,17 @@ public class Rate2Activity extends AppCompatActivity {
         btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (rgAttendance.getCheckedRadioButtonId() == -1) {
-                    Toast.makeText(Rate2Activity.this, "נא לסמן האם יש נוכחות בקורס זה!", Toast.LENGTH_SHORT).show();
+                if ((int) rbTeacher.getRating() == 0 || (int) rbCourse.getRating() == 0 || (int) rbTest.getRating() == 0) {
+                    Toast.makeText(Rate2Activity.this, "נא לדרג את כל הקטגוריות", Toast.LENGTH_SHORT).show();
                 } else {
+                    String comment = etComment.getText().toString();
                     //creates a new ratings for the selected course and push it to the database.
-                    Ratings rat = new Ratings(courseName, (int)rbTeacher.getRating(), (int)rbCourse.getRating(), (int)rbTest.getRating());
+                    Ratings rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
                     drRating.push().setValue(rat);
                     Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(Rate2Activity.this, HomeActivity.class);
                     startActivity(i);
-                    finish();
+                    finishAffinity();
                 }
             }
         });
@@ -105,5 +105,7 @@ public class Rate2Activity extends AppCompatActivity {
             }
         });
 
+
     }
+
 }

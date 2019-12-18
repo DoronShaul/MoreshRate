@@ -5,21 +5,27 @@ public class Ratings {
     private int teacherRating;
     private int courseRating;
     private int testRating;
+    private String comment;
 
     public Ratings() {
 
     }
 
-    public Ratings(String name, int teacher, int course, int test){
-        this.courseName=name;
-        this.courseRating=course;
-        this.teacherRating=teacher;
-        this.testRating=test;
+    public Ratings(String name, String comment, int teacher, int course, int test) {
+        this.courseName = name;
+        this.comment = comment;
+        this.courseRating = course;
+        this.teacherRating = teacher;
+        this.testRating = test;
     }
 
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public void setTeacherRating(int teacherRating) {
@@ -36,6 +42,10 @@ public class Ratings {
 
     public String getCourseName() {
         return courseName;
+    }
+
+    public String getComment() {
+        return comment;
     }
 
     public int getTeacherRating() {
