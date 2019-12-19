@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tvSignUp, tvForgotPassword;
     Button btnLogin;
     EditText emailId, password;
+    final static String adminDoron = "doronsds@gmail.com";
     private FirebaseAuth.AuthStateListener asListener;
 
 
@@ -32,11 +33,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //hides action bar.
-        try
-        {
+        try {
             this.getSupportActionBar().hide();
+        } catch (NullPointerException e) {
         }
-        catch (NullPointerException e){}
         setContentView(R.layout.activity_main);
         ImageView logo = findViewById(R.id.imageView);
         firebaseAuth = firebaseAuth.getInstance();
@@ -99,9 +99,18 @@ public class MainActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser fbUser = firebaseAuth.getCurrentUser();
                 if (fbUser != null) {
-                    Intent i = new Intent(MainActivity.this, HomeActivity.class);
-                    startActivity(i);
-                    finish();
+                    //if the user is the admin, then it goes to the admin page.
+                    if (fbUser.getEmail().equals(adminDoron)) {
+                        Intent i = new Intent(MainActivity.this, AdminActivity.class);
+                        startActivity(i);
+                        finish();
+
+                    } else {
+                        Intent ii = new Intent(MainActivity.this, HomeActivity.class);
+                        startActivity(ii);
+                        finish();
+
+                    }
                 } else {
                     Toast.makeText(MainActivity.this, "אנא התחבר/י", Toast.LENGTH_SHORT).show();
                 }

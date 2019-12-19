@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,6 +36,7 @@ public class Rate2Activity extends AppCompatActivity {
     FirebaseDatabase mDatabase;
     DatabaseReference drRating, drCourses;
     FirebaseAuth firebaseAuth;
+    final static String adminDoron = "doronsds@gmail.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,18 @@ public class Rate2Activity extends AppCompatActivity {
                     Ratings rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
                     drRating.push().setValue(rat);
                     Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(Rate2Activity.this, HomeActivity.class);
-                    startActivity(i);
-                    finishAffinity();
+                    FirebaseUser fbUser = firebaseAuth.getCurrentUser();
+                    if (fbUser.getEmail().equals(adminDoron)) {
+                        Intent i = new Intent(Rate2Activity.this, AdminActivity.class);
+                        startActivity(i);
+                        finishAffinity();
+
+                    } else {
+                        Intent ii = new Intent(Rate2Activity.this, HomeActivity.class);
+                        startActivity(ii);
+                        finishAffinity();
+
+                    }
                 }
             }
         });
