@@ -71,6 +71,10 @@ public class Rate2Activity extends AppCompatActivity {
             tvCourse.setText(courseName);
         }
 
+        /**
+         * this method adds the rating given by the user to the database, when the user click on the rate button.
+         * also, updates the average of every category in the courses database according to the new rating that been added.
+         */
         btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,9 +86,12 @@ public class Rate2Activity extends AppCompatActivity {
                     //creates a new ratings for the selected course and push it to the database.
                     rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
                     drRating.push().setValue(rat);
-
-
                     Query query = drCourses.orderByChild("courseName").equalTo(courseName);
+
+
+                    /**
+                     * this method reaches the specific course that been rated, and updates its average values.
+                     */
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -92,7 +99,7 @@ public class Rate2Activity extends AppCompatActivity {
                             String key = nodeDataSnapshot.getKey();
                             Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
                             int numOfRatings = it.next().child("numOfRatings").getValue(Integer.class);
-                            Toast.makeText(Rate2Activity.this, ""+numOfRatings, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Rate2Activity.this, "" + numOfRatings, Toast.LENGTH_SHORT).show();
                             String path = "/" + key;
                             HashMap<String, Object> result = new HashMap<>();
                             result.put("teacherAvg", 3.7);

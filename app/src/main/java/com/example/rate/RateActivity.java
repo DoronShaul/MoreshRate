@@ -61,6 +61,9 @@ public class RateActivity extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, courses);
         lvCourses.setAdapter(adapter);
 
+        /**
+         * this method makes the etSearch edit text a search option in the listView.
+         */
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -78,6 +81,9 @@ public class RateActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * this method adds all the courses in the database to the courses arrayList.
+         */
         vel = databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

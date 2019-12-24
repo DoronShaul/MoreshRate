@@ -1,5 +1,8 @@
 package com.example.rate;
 
+/**
+ * this class represents a rating of a course.
+ */
 public class Ratings {
     private String courseName;
     private int teacherRating;

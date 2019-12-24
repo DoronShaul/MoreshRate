@@ -1,5 +1,8 @@
 package com.example.rate;
 
+/**
+ * this class represents a course.
+ */
 public class Course {
     private String courseName;
     private String teacherName;
