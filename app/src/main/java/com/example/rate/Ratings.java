@@ -8,7 +8,11 @@ public class Ratings {
     private String comment;
 
     public Ratings() {
-
+        this.courseName = "";
+        this.teacherRating = 0;
+        this.courseRating = 0;
+        this.testRating = 0;
+        this.comment = "";
     }
 
     public Ratings(String name, String comment, int teacher, int course, int test) {

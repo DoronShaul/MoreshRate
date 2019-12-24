@@ -27,6 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
 public class Rate2Activity extends AppCompatActivity {
     String courseName;
     TextView tvCourse;
@@ -36,6 +39,8 @@ public class Rate2Activity extends AppCompatActivity {
     FirebaseDatabase mDatabase;
     DatabaseReference drRating, drCourses;
     FirebaseAuth firebaseAuth;
+    Ratings rat;
+    Course course;
     final static String adminDoron = "doronsds@gmail.com";
 
     @Override
@@ -69,13 +74,38 @@ public class Rate2Activity extends AppCompatActivity {
         btnRate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //if at least one of the rating fields are empty
                 if ((int) rbTeacher.getRating() == 0 || (int) rbCourse.getRating() == 0 || (int) rbTest.getRating() == 0) {
                     Toast.makeText(Rate2Activity.this, "נא לדרג את כל הקטגוריות", Toast.LENGTH_SHORT).show();
                 } else {
                     String comment = etComment.getText().toString();
                     //creates a new ratings for the selected course and push it to the database.
-                    Ratings rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
+                    rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
                     drRating.push().setValue(rat);
+
+
+                    Query query = drCourses.orderByChild("courseName").equalTo(courseName);
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            DataSnapshot nodeDataSnapshot = dataSnapshot.getChildren().iterator().next();
+                            String key = nodeDataSnapshot.getKey();
+                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                            int numOfRatings = it.next().child("numOfRatings").getValue(Integer.class);
+                            Toast.makeText(Rate2Activity.this, ""+numOfRatings, Toast.LENGTH_SHORT).show();
+                            String path = "/" + key;
+                            HashMap<String, Object> result = new HashMap<>();
+                            result.put("teacherAvg", 3.7);
+                            drCourses.child(path).updateChildren(result);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
                     Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
                     FirebaseUser fbUser = firebaseAuth.getCurrentUser();
                     if (fbUser.getEmail().equals(adminDoron)) {

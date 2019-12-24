@@ -185,7 +185,8 @@
         android:layout_marginEnd="162dp"
         android:layout_marginRight="162dp"
         android:backgroundTint="#FAFAFA"
-        android:text="דרג"
+        android:text="Rate!"
+        android:textAllCaps="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText8" />
