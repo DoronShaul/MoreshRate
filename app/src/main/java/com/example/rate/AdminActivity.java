@@ -57,5 +57,13 @@ public class AdminActivity extends AppCompatActivity {
             }
         });
 
+        btnAddCourse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(AdminActivity.this,AddCourseActivity.class);
+                startActivity(i);
+            }
+        });
+
     }
 }

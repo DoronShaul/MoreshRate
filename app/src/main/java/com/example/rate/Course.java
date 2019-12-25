@@ -4,7 +4,6 @@ package com.example.rate;
  * this class represents a course.
  */
 public class Course {
-    private String courseName;
     private String teacherName;
     private double teacherAvg;
     private double courseAvg;
@@ -14,7 +13,6 @@ public class Course {
     private boolean isMust;
 
     public Course() {
-        this.courseName = "";
         this.teacherName = "";
         this.courseAvg = 0;
         this.teacherAvg = 0;
@@ -25,19 +23,17 @@ public class Course {
     }
 
 
-    public Course(String course, String teacher, boolean must) {
-        this.courseName = course;
+    public Course(String teacher, boolean must) {
         this.teacherName = teacher;
         this.courseAvg = 0;
         this.teacherAvg = 0;
         this.testAvg = 0;
-        totalAvg = 0;
+        this.totalAvg = 0;
         this.numOfRatings = 0;
         this.isMust = must;
     }
 
     public Course(Course other) {
-        this.courseName = other.getCourseName();
         this.teacherName = other.getTeacherName();
         this.isMust = other.getIsMust();
         this.testAvg = other.getTestAvg();
@@ -86,14 +82,6 @@ public class Course {
 
     public void setNumOfRatings(int numOfRatings) {
         this.numOfRatings = numOfRatings;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
     }
 
     public String getTeacherName() {

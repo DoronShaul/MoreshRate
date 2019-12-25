@@ -89,7 +89,7 @@ public class RateActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
                 while (it.hasNext()) {
-                    courses.add(it.next().child("courseName").getValue().toString());
+                    courses.add(it.next().getKey());
                 }
             }
 

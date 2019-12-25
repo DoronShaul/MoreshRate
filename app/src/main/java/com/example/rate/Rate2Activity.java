@@ -43,6 +43,21 @@ public class Rate2Activity extends AppCompatActivity {
     Course course;
     final static String adminDoron = "doronsds@gmail.com";
 
+
+    public static double updateAvg(double avg, int numOfRatings, float currentRating){
+        double newAvg;
+        newAvg = (avg*numOfRatings+(int)currentRating)/(numOfRatings+1);
+        return newAvg;
+    }
+
+    public static double updateTotalAvg(double teacherAvg, double testAvg, double courseAvg){
+        double total;
+        total=0.4*testAvg+0.3*teacherAvg+0.3*courseAvg;
+        return total;
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,24 +101,39 @@ public class Rate2Activity extends AppCompatActivity {
                     //creates a new ratings for the selected course and push it to the database.
                     rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
                     drRating.push().setValue(rat);
-                    Query query = drCourses.orderByChild("courseName").equalTo(courseName);
-
-
-                    /**
+                    Query query = drCourses.orderByKey().equalTo(courseName);
+                    /*
                      * this method reaches the specific course that been rated, and updates its average values.
                      */
                     query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             DataSnapshot nodeDataSnapshot = dataSnapshot.getChildren().iterator().next();
+                            //gets the name of the course (key).
                             String key = nodeDataSnapshot.getKey();
-                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                            int numOfRatings = it.next().child("numOfRatings").getValue(Integer.class);
-                            Toast.makeText(Rate2Activity.this, "" + numOfRatings, Toast.LENGTH_SHORT).show();
-                            String path = "/" + key;
-                            HashMap<String, Object> result = new HashMap<>();
-                            result.put("teacherAvg", 3.7);
-                            drCourses.child(path).updateChildren(result);
+                            //updates the average of all categories.
+                            try {
+                                //gets the current data of the course.
+                                int numOfRatings = nodeDataSnapshot.child("numOfRatings").getValue(Integer.class);
+                                double teacherAvg = nodeDataSnapshot.child("teacherAvg").getValue(Double.class);
+                                double courseAvg = nodeDataSnapshot.child("courseAvg").getValue(Double.class);
+                                double testAvg = nodeDataSnapshot.child("testAvg").getValue(Double.class);
+                                HashMap<String, Object> update = new HashMap<>();
+                                //puts the updated data into the database.
+                                double newTeacherAvg = updateAvg(teacherAvg, numOfRatings,rbTeacher.getRating());
+                                double newCourseAvg = updateAvg(courseAvg, numOfRatings,rbCourse.getRating());
+                                double newTestAvg = updateAvg(testAvg, numOfRatings,rbTest.getRating());
+                                double newTotalAvg = updateTotalAvg(newTeacherAvg, newTestAvg, newCourseAvg);
+                                update.put("teacherAvg", newTeacherAvg);
+                                update.put("courseAvg", newCourseAvg);
+                                update.put("testAvg", newTestAvg);
+                                update.put("totalAvg", newTotalAvg);
+                                update.put("numOfRatings", numOfRatings+1);
+                                drCourses.child(key).updateChildren(update);
+                            }catch (NullPointerException e){
+                                e.printStackTrace();
+                            }
+
                         }
 
                         @Override
@@ -115,7 +145,7 @@ public class Rate2Activity extends AppCompatActivity {
 
                     Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
                     FirebaseUser fbUser = firebaseAuth.getCurrentUser();
-                    if (fbUser.getEmail().equals(adminDoron)) {
+                    if (fbUser.getEmail()!=null && fbUser.getEmail().equals(adminDoron)) {
                         Intent i = new Intent(Rate2Activity.this, AdminActivity.class);
                         startActivity(i);
                         finishAffinity();
