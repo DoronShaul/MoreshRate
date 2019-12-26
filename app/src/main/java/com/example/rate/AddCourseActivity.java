@@ -23,6 +23,7 @@ public class AddCourseActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase fd;
     DatabaseReference drCourses;
+    Course newCourse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class AddCourseActivity extends AppCompatActivity {
                     Toast.makeText(AddCourseActivity.this, "נא לבחור האם הנוכחות חובה בקורס", Toast.LENGTH_SHORT).show();
                 } else {
                     boolean isMust = rbYes.isChecked();
-                    Course newCourse = new Course(teacher, isMust);
+                    newCourse = new Course(teacher, isMust);
                     drCourses.child(course).setValue(newCourse);
                     Toast.makeText(AddCourseActivity.this, "הקורס הוסף בהצלחה!", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(AddCourseActivity.this, AdminActivity.class);
