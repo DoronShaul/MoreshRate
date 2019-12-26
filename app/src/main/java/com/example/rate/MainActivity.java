@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
         }
         setContentView(R.layout.activity_main);
-        ImageView logo = findViewById(R.id.imageView);
+//        ImageView logo = findViewById(R.id.imageView);
         firebaseAuth = firebaseAuth.getInstance();
         emailId = findViewById(R.id.editText2);
         password = findViewById(R.id.editText3);

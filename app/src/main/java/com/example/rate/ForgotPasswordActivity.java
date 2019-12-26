@@ -42,6 +42,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                     emailId.setError("אנא הכנס/י כתובת מייל!");
                     emailId.requestFocus();
                 } else {
+                    //sends password reset to the users mail
                     firebaseAuth.sendPasswordResetEmail(strEmail).addOnCompleteListener(ForgotPasswordActivity.this, new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

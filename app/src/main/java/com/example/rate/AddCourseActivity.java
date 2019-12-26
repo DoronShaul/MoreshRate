@@ -60,7 +60,7 @@ public class AddCourseActivity extends AppCompatActivity {
                     etAddTeacher.setError("נא להכניס מרצה");
                     //if none of the radio buttons are checked.
                 } else if (!(rbNo.isChecked() || rbYes.isChecked())) {
-                    Toast.makeText(AddCourseActivity.this, "נא לבחור האם יש נוכחות בקורס", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddCourseActivity.this, "נא לבחור האם הנוכחות חובה בקורס", Toast.LENGTH_SHORT).show();
                 } else {
                     boolean isMust = rbYes.isChecked();
                     Course newCourse = new Course(teacher, isMust);
