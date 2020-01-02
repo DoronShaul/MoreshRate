@@ -98,8 +98,9 @@ public class Rate2Activity extends AppCompatActivity {
                 } else {
                     String comment = etComment.getText().toString();
                     //creates a new ratings for the selected course and push it to the database.
-                    rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
-                    drRating.push().setValue(rat);
+
+                    //*********rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
+                    //*********drRating.push().setValue(rat);
                     Query query = drCourses.orderByKey().equalTo(courseName);
                     /*
                      * this method reaches the specific course that been rated, and updates its average values.

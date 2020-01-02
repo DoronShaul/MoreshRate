@@ -4,7 +4,7 @@ package com.example.rate;
  * this class represents a course.
  */
 public class Course {
-    private String teacherName;
+    private String teacherID;
     private double teacherAvg;
     private double courseAvg;
     private double testAvg;
@@ -13,7 +13,7 @@ public class Course {
     private boolean isMust;
 
     public Course() {
-        this.teacherName = "";
+        this.teacherID = "";
         this.courseAvg = 0;
         this.teacherAvg = 0;
         this.testAvg = 0;
@@ -24,7 +24,7 @@ public class Course {
 
 
     public Course(String teacher, boolean must) {
-        this.teacherName = teacher;
+        this.teacherID = teacher;
         this.courseAvg = 0;
         this.teacherAvg = 0;
         this.testAvg = 0;
@@ -34,7 +34,7 @@ public class Course {
     }
 
     public Course(Course other) {
-        this.teacherName = other.getTeacherName();
+        this.teacherID = other.getTeacherID();
         this.isMust = other.getIsMust();
         this.testAvg = other.getTestAvg();
         this.teacherAvg = other.getTeacherAvg();
@@ -84,12 +84,12 @@ public class Course {
         this.numOfRatings = numOfRatings;
     }
 
-    public String getTeacherName() {
-        return teacherName;
+    public String getTeacherID() {
+        return teacherID;
     }
 
-    public void setTeacherName(String teacherName) {
-        this.teacherName = teacherName;
+    public void setTeacherID(String teacherID) {
+        this.teacherID = teacherID;
     }
 
     public boolean getIsMust() {

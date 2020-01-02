@@ -13,16 +13,36 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="99dp"
         android:layout_marginLeft="99dp"
-        android:layout_marginTop="280dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="99dp"
         android:layout_marginRight="99dp"
+        android:backgroundTint="#FAFAFA"
         android:ems="10"
         android:hint="מייל"
-        android:textColorHint="#FAFAFA"
-        android:backgroundTint="#FAFAFA"
-        android:textColor="#FAFAFA"
         android:inputType="textEmailAddress"
+        android:textColor="#FAFAFA"
+        android:textColorHint="#FAFAFA"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etName" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="99dp"
+        android:layout_marginLeft="99dp"
+        android:layout_marginTop="232dp"
+        android:layout_marginEnd="99dp"
+        android:layout_marginRight="99dp"
+        android:backgroundTint="#FAFAFA"
+        android:ems="10"
+        android:hint="שם מלא"
+        android:inputType="textPersonName"
+        android:textColor="#FAFAFA"
+        android:textColorHint="#FAFAFA"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -70,12 +90,13 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="162dp"
         android:layout_marginLeft="162dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="132dp"
         android:layout_marginEnd="162dp"
         android:layout_marginRight="162dp"
-        android:text="הירשם"
         android:backgroundTint="#FAFAFA"
+        android:text="הירשם"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText5" />
 
@@ -108,5 +129,40 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup1"
+        android:layout_width="163dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="115dp"
+        android:layout_marginLeft="115dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="190dp"
+        android:layout_marginRight="190dp"
+        android:orientation="horizontal"
+        android:checkedButton="@id/btnAsStudent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText5">
+
+        <RadioButton
+            android:id="@+id/btnAsTeacher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="#FAFAFA"
+            android:text="מרצה"
+            android:textColor="#FAFAFA" />
+
+        <RadioButton
+            android:id="@+id/btnAsStudent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:buttonTint="#FAFAFA"
+            android:text="סטודנט"
+            android:textColor="#FAFAFA" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
