@@ -21,8 +21,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Iterator;
 
 public class SignUpActivity extends AppCompatActivity {
     EditText emailId, password, vPassword, personName;
@@ -31,11 +38,12 @@ public class SignUpActivity extends AppCompatActivity {
     RadioButton btnTeacher, btnStudent;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase fd;
-    DatabaseReference drStudents;
-    String strID, strName;
+    DatabaseReference drStudents, drTeachers;
+    String strID, strName, strEmail, strPassword, strvPassword;
+    boolean isExist = false;
     private NotificationManagerCompat notificationManager;
 
-    public void sendOnChannel1(View v){
+    public void sendOnChannel1(View v) {
         Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_1_ID).setSmallIcon(R.drawable.ic_sms).setContentTitle("מרצה חדש").setContentText("יש מרצה חדש שרוצה להירשם").setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_MESSAGE).build();
         notificationManager.notify(1, notification);
     }
@@ -52,6 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
         firebaseAuth = firebaseAuth.getInstance();
         fd = FirebaseDatabase.getInstance();
         drStudents = fd.getReference("students");
+        drTeachers = fd.getReference("teachers");
         emailId = findViewById(R.id.editText);
         password = findViewById(R.id.editText4);
         vPassword = findViewById(R.id.editText5);
@@ -70,9 +79,9 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 strName = personName.getText().toString();
-                String strEmail = emailId.getText().toString();
-                String strPassword = password.getText().toString();
-                String strvPassword = vPassword.getText().toString();
+                strEmail = emailId.getText().toString();
+                strPassword = password.getText().toString();
+                strvPassword = vPassword.getText().toString();
                 if (strName.isEmpty()) {
                     personName.setError("אנא הכנס שם מלא!");
                     personName.requestFocus();
@@ -110,14 +119,76 @@ public class SignUpActivity extends AppCompatActivity {
                                                 drStudents.child(strID).setValue(newStudent);
                                             }
                                         });
-                                        startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
+                                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                                         finish();
                                     }
                                 }
                             });
                         } else {
-                            sendOnChannel1(v);
-                            Toast.makeText(SignUpActivity.this, "בקשתך להירשם כמרצה מחכה לאישור", Toast.LENGTH_SHORT).show();
+                            drTeachers.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                                    while (it.hasNext()) {
+                                        DataSnapshot node = it.next();
+
+                                        if (node.child("teacherName").getValue().toString().equals(strName)) {
+                                            firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (!task.isSuccessful()) {
+                                                        Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+                                                            @Override
+                                                            public void onIdTokenChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                                                strID = firebaseAuth.getCurrentUser().getUid();
+                                                                Toast.makeText(SignUpActivity.this,strID, Toast.LENGTH_SHORT).show();
+
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+
+                                            HashMap<String, Object> hm = new HashMap<>();
+                                            hm.put("uID", strID);
+                                            drTeachers.child(node.getKey()).updateChildren(hm);
+                                            isExist = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!isExist) {
+                                        firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+                                                        @Override
+                                                        public void onIdTokenChanged(@NonNull FirebaseAuth firebaseAuth) {
+                                                            strID = firebaseAuth.getCurrentUser().getUid();
+                                                            Teachers newTeacher = new Teachers(strName, strID);
+                                                            drTeachers.push().setValue(newTeacher);
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+
+
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            //sendOnChannel1(v);
+                            //Toast.makeText(SignUpActivity.this, "בקשתך להירשם כמרצה מחכה לאישור", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                             finish();
                         }
