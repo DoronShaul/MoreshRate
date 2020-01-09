@@ -103,95 +103,94 @@ public class SignUpActivity extends AppCompatActivity {
                 } else if (!(strEmail.isEmpty() && strvPassword.isEmpty())) {
                     //checks if the password and the verify password are equal.
                     if (strPassword.equals(strvPassword)) {
-                        if (btnStudent.isChecked()) {
-                            firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (!task.isSuccessful()) {
-                                        Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+                        firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    try {
+                                        strID = firebaseAuth.getCurrentUser().getUid();
+                                    } catch (NullPointerException e) {
+                                        e.printStackTrace();
+                                    }
+                                    if (btnStudent.isChecked()) { //if the user sign up as a student.
+                                        Students newStudent = new Students(strName);
+                                        drStudents.child(strID).setValue(newStudent).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
-                                            public void onIdTokenChanged(@NonNull FirebaseAuth firebaseAuth) {
-                                                strID = firebaseAuth.getCurrentUser().getUid();
-                                                Students newStudent = new Students(strName);
-                                                Toast.makeText(SignUpActivity.this, strID, Toast.LENGTH_SHORT).show();
-                                                drStudents.child(strID).setValue(newStudent);
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (!task.isSuccessful()) {
+                                                    Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(SignUpActivity.this, "יצירת סטודנט הצליחה", Toast.LENGTH_SHORT).show();
+                                                    Intent i = new Intent(SignUpActivity.this, MainActivity.class);
+                                                    i.putExtra("type", "student");
+                                                    startActivity(i);
+                                                    finish();
+                                                }
                                             }
                                         });
-                                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                                        finish();
-                                    }
-                                }
-                            });
-                        } else {
-                            drTeachers.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                                    while (it.hasNext()) {
-                                        DataSnapshot node = it.next();
 
-                                        if (node.child("teacherName").getValue().toString().equals(strName)) {
-                                            firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                                    if (!task.isSuccessful()) {
-                                                        Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+
+                                    } else { //if the user sign up as a teacher.
+                                        drTeachers.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                                                while (it.hasNext()) {
+                                                    DataSnapshot node = it.next();
+                                                    if (node.child("teacherName").getValue().toString().equals(strName)) { //if the teacher is already exists in the database.
+                                                        HashMap<String, Object> update = new HashMap<>();
+                                                        update.put("userID", strID);
+                                                        String key = node.getKey();
+                                                        drTeachers.child(key).updateChildren(update).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
-                                                            public void onIdTokenChanged(@NonNull FirebaseAuth firebaseAuth) {
-                                                                strID = firebaseAuth.getCurrentUser().getUid();
-                                                                Toast.makeText(SignUpActivity.this,strID, Toast.LENGTH_SHORT).show();
-
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (!task.isSuccessful()) {
+                                                                    Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    Toast.makeText(SignUpActivity.this, "עדכון מרצה קיים הצליח", Toast.LENGTH_SHORT).show();
+                                                                    Intent i = new Intent(SignUpActivity.this, MainActivity.class);
+                                                                    i.putExtra("type", "teacher");
+                                                                    startActivity(i);
+                                                                    finish();
+                                                                }
                                                             }
                                                         });
+                                                        isExist = true;
+                                                        break;
                                                     }
                                                 }
-                                            });
-
-                                            HashMap<String, Object> hm = new HashMap<>();
-                                            hm.put("uID", strID);
-                                            drTeachers.child(node.getKey()).updateChildren(hm);
-                                            isExist = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!isExist) {
-                                        firebaseAuth.createUserWithEmailAndPassword(strEmail, strPassword).addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                if (!task.isSuccessful()) {
-                                                    Toast.makeText(SignUpActivity.this, "הרישום לא הצליח, נסה שוב", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+                                                if (!isExist) { //if the teacher is not exist in the database.
+                                                    Teachers newTeacher = new Teachers(strName, strID);
+                                                    drTeachers.push().setValue(newTeacher).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
-                                                        public void onIdTokenChanged(@NonNull FirebaseAuth firebaseAuth) {
-                                                            strID = firebaseAuth.getCurrentUser().getUid();
-                                                            Teachers newTeacher = new Teachers(strName, strID);
-                                                            drTeachers.push().setValue(newTeacher);
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (!task.isSuccessful()) {
+                                                                Toast.makeText(SignUpActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                Toast.makeText(SignUpActivity.this, "יצירת מרצה לא קיים הצליחה", Toast.LENGTH_SHORT).show();
+                                                                Intent i = new Intent(SignUpActivity.this, MainActivity.class);
+                                                                i.putExtra("type", "teacher");
+                                                                startActivity(i);
+                                                                finish();
+                                                            }
                                                         }
                                                     });
                                                 }
                                             }
+
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
                                         });
-
-
                                     }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                 }
-                            });
-
-                            //sendOnChannel1(v);
-                            //Toast.makeText(SignUpActivity.this, "בקשתך להירשם כמרצה מחכה לאישור", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                            finish();
-                        }
+                            }
+                        });
 
                     } else {
                         vPassword.setError("הסיסמאות לא תואמות!");
