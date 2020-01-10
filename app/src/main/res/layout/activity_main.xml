@@ -37,6 +37,7 @@
         android:layout_marginRight="99dp"
         android:ems="10"
         android:hint="סיסמא"
+        android:gravity="right"
         android:textColorHint="#FAFAFA"
         android:backgroundTint="#FAFAFA"
         android:textColor="#FAFAFA"
