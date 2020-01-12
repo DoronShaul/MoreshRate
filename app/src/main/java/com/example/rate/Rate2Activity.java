@@ -3,7 +3,10 @@ package com.example.rate;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,17 +34,44 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class Rate2Activity extends AppCompatActivity {
-    String courseName;
+    String courseName, courseID, userID, comment, studentName;
     TextView tvCourse;
     EditText etComment;
     Button btnBack, btnLogout, btnRate;
     RatingBar rbCourse, rbTeacher, rbTest;
     FirebaseDatabase mDatabase;
-    DatabaseReference drRating, drCourses;
+    DatabaseReference drRating, drCourses, drStudent;
     FirebaseAuth firebaseAuth;
     Ratings rat;
-    Course course;
+    Query qCourseID, qStudentName;
     final static String adminDoron = "doronsds@gmail.com";
+    private NotificationManagerCompat notificationManager;
+
+    public void getName() {
+        qStudentName = drStudent.orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid());
+        qStudentName.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                if (it.hasNext()) {
+                    DataSnapshot node = it.next();
+                    studentName = node.child("studentName").getValue().toString();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void sendOnChannel1(View v) {
+
+
+        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_1_ID).setSmallIcon(R.drawable.ic_sms).setContentTitle(studentName).setContentText("דירוג חדש התווסף!").setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_MESSAGE).build();
+        notificationManager.notify(1, notification);
+    }
 
 
     public static double updateAvg(double avg, int numOfRatings, float currentRating) {
@@ -69,6 +99,7 @@ public class Rate2Activity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         drCourses = mDatabase.getReference("courses");
         drRating = mDatabase.getReference("ratings");
+        drStudent = mDatabase.getReference("students");
         setContentView(R.layout.activity_rate2);
         tvCourse = findViewById(R.id.textView4);
         etComment = findViewById(R.id.editText8);
@@ -78,6 +109,14 @@ public class Rate2Activity extends AppCompatActivity {
         rbCourse = findViewById(R.id.ratingBar);
         rbTeacher = findViewById(R.id.ratingBar1);
         rbTest = findViewById(R.id.ratingBar2);
+        notificationManager = NotificationManagerCompat.from(this);
+        try {
+
+            userID = firebaseAuth.getCurrentUser().getUid();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        getName();
         Intent i = getIntent();
         Bundle b = i.getExtras();
         if (b != null) {
@@ -96,57 +135,75 @@ public class Rate2Activity extends AppCompatActivity {
                 if ((int) rbTeacher.getRating() == 0 || (int) rbCourse.getRating() == 0 || (int) rbTest.getRating() == 0) {
                     Toast.makeText(Rate2Activity.this, "נא לדרג את כל הקטגוריות", Toast.LENGTH_SHORT).show();
                 } else {
-                    String comment = etComment.getText().toString();
-                    //creates a new ratings for the selected course and push it to the database.
+                    comment = etComment.getText().toString();
 
-                    //*********rat = new Ratings(courseName, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating());
-                    //*********drRating.push().setValue(rat);
-                    Query query = drCourses.orderByKey().equalTo(courseName);
-                    /*
-                     * this method reaches the specific course that been rated, and updates its average values.
-                     */
-                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    qCourseID = drCourses.orderByChild("courseName").equalTo(courseName);
+                    qCourseID.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            DataSnapshot nodeDataSnapshot = dataSnapshot.getChildren().iterator().next();
-                            //gets the name of the course (key).
-                            String key = nodeDataSnapshot.getKey();
-                            //updates the average of all categories.
-                            try {
-                                //gets the current data of the course.
-                                int numOfRatings = nodeDataSnapshot.child("numOfRatings").getValue(Integer.class);
-                                double teacherAvg = nodeDataSnapshot.child("teacherAvg").getValue(Double.class);
-                                double courseAvg = nodeDataSnapshot.child("courseAvg").getValue(Double.class);
-                                double testAvg = nodeDataSnapshot.child("testAvg").getValue(Double.class);
-                                HashMap<String, Object> update = new HashMap<>();
-                                //puts the updated data into the database.
-                                double newTeacherAvg = updateAvg(teacherAvg, numOfRatings, rbTeacher.getRating());
-                                double newCourseAvg = updateAvg(courseAvg, numOfRatings, rbCourse.getRating());
-                                double newTestAvg = updateAvg(testAvg, numOfRatings, rbTest.getRating());
-                                double newTotalAvg = updateTotalAvg(newTeacherAvg, newTestAvg, newCourseAvg);
-                                update.put("teacherAvg", newTeacherAvg);
-                                update.put("courseAvg", newCourseAvg);
-                                update.put("testAvg", newTestAvg);
-                                update.put("totalAvg", newTotalAvg);
-                                update.put("numOfRatings", numOfRatings + 1);
-                                drCourses.child(key).updateChildren(update);
-                            } catch (NullPointerException e) {
-                                e.printStackTrace();
-                            }
+                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                            if (it.hasNext()) {
+                                DataSnapshot node = it.next();
+                                courseID = node.getKey();
+                                //creates a new ratings for the selected course and push it to the database.
+                                rat = new Ratings(courseID, comment, (int) rbTeacher.getRating(), (int) rbCourse.getRating(), (int) rbTest.getRating(), userID);
+                                drRating.push().setValue(rat);
+                                /*
+                                 * this method reaches the specific course that been rated, and updates its average values.
+                                 */
+                                qCourseID.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        DataSnapshot nodeDataSnapshot = dataSnapshot.getChildren().iterator().next();
 
+                                        //updates the average of all categories.
+                                        try {
+                                            //gets the current data of the course.
+                                            int numOfRatings = nodeDataSnapshot.child("numOfRatings").getValue(Integer.class);
+                                            double teacherAvg = nodeDataSnapshot.child("teacherAvg").getValue(Double.class);
+                                            double courseAvg = nodeDataSnapshot.child("courseAvg").getValue(Double.class);
+                                            double testAvg = nodeDataSnapshot.child("testAvg").getValue(Double.class);
+                                            HashMap<String, Object> update = new HashMap<>();
+                                            //puts the updated data into the database.
+                                            double newTeacherAvg = updateAvg(teacherAvg, numOfRatings, rbTeacher.getRating());
+                                            double newCourseAvg = updateAvg(courseAvg, numOfRatings, rbCourse.getRating());
+                                            double newTestAvg = updateAvg(testAvg, numOfRatings, rbTest.getRating());
+                                            double newTotalAvg = updateTotalAvg(newTeacherAvg, newTestAvg, newCourseAvg);
+                                            update.put("teacherAvg", newTeacherAvg);
+                                            update.put("courseAvg", newCourseAvg);
+                                            update.put("testAvg", newTestAvg);
+                                            update.put("totalAvg", newTotalAvg);
+                                            update.put("numOfRatings", numOfRatings + 1);
+                                            drCourses.child(courseID).updateChildren(update);
+                                        } catch (NullPointerException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
 
 
-                    Toast.makeText(Rate2Activity.this, "תודה שדירגת!", Toast.LENGTH_SHORT).show();
+
+
+
+                    sendOnChannel1(v); //sends notification.
+
+
                     FirebaseUser fbUser = firebaseAuth.getCurrentUser();
                     //takes the admin to it's activity
-                    if (fbUser.getEmail() != null && fbUser.getEmail().equals(adminDoron)) {
+                    if (fbUser.getEmail() != null && fbUser.getEmail().equals(adminDoron)) { //change to the relevant profile activity.
                         Intent i = new Intent(Rate2Activity.this, AdminActivity.class);
                         startActivity(i);
                         finishAffinity();

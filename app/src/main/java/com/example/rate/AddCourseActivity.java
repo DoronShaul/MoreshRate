@@ -1,5 +1,6 @@
 package com.example.rate;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,9 +12,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Iterator;
 
 public class AddCourseActivity extends AppCompatActivity {
     Button btnBack, btnLogout, btnAddCourse;
@@ -22,8 +31,10 @@ public class AddCourseActivity extends AppCompatActivity {
     RadioGroup rgAttendance;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase fd;
-    DatabaseReference drCourses;
+    DatabaseReference drCourses, drTeachers;
     Course newCourse;
+    String teacherID = "";
+    Query q;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +56,7 @@ public class AddCourseActivity extends AppCompatActivity {
         firebaseAuth = firebaseAuth.getInstance();
         fd = FirebaseDatabase.getInstance();
         drCourses = fd.getReference("courses");
+        drTeachers = fd.getReference("teachers");
 
         /*
         this listener makes sure that all the fields are filled and if they are, it creates a new course and adds it to the database.
@@ -52,20 +64,65 @@ public class AddCourseActivity extends AppCompatActivity {
         btnAddCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String course = etAddCourse.getText().toString();
-                String teacher = etAddTeacher.getText().toString();
-                if (course.isEmpty()) {
+                final String courseName = etAddCourse.getText().toString();
+                final String teacherName = etAddTeacher.getText().toString();
+                if (courseName.isEmpty()) {
                     etAddCourse.setError("נא להכניס קורס");
                 }
-                if (teacher.isEmpty()) {
+                if (teacherName.isEmpty()) {
                     etAddTeacher.setError("נא להכניס מרצה");
                     //if none of the radio buttons are checked.
                 } else if (!(rbNo.isChecked() || rbYes.isChecked())) {
                     Toast.makeText(AddCourseActivity.this, "נא לבחור האם הנוכחות חובה בקורס", Toast.LENGTH_SHORT).show();
-                } else {
-                    boolean isMust = rbYes.isChecked();
-                    newCourse = new Course(teacher, isMust);
-                    drCourses.child(course).setValue(newCourse);
+                } else {  //if all fields are filled.
+                    final boolean isMust = rbYes.isChecked();
+                    q = drTeachers.orderByChild("teacherName").equalTo(teacherName);
+                    q.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                            if (it.hasNext()) { //if the teacher already exists
+                                DataSnapshot node = it.next();
+                                teacherID = node.getKey();
+                                Course newCourse = new Course(courseName, teacherID, isMust); //creating the course
+                                drCourses.push().setValue(newCourse); //adding the course to the database
+                            } else {
+                                Teachers newTeacher = new Teachers(teacherName, null); //creating new teacher with no userId
+                                drTeachers.push().setValue(newTeacher).addOnCompleteListener(new OnCompleteListener<Void>() {  //adds the teacher to the database
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (!task.isSuccessful()) {
+                                            Toast.makeText(AddCourseActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            q.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator(); //finds the teacher
+                                                    if (it.hasNext()) {
+                                                        DataSnapshot node = it.next();
+                                                        teacherID = node.getKey(); //Extracts the teacherID
+                                                        Course newCourse = new Course(courseName, teacherID, isMust); //creating the course
+                                                        drCourses.push().setValue(newCourse); //adding the course to the database
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     Toast.makeText(AddCourseActivity.this, "הקורס הוסף בהצלחה!", Toast.LENGTH_SHORT).show();
                     Intent i = new Intent(AddCourseActivity.this, AdminActivity.class);
                     startActivity(i);

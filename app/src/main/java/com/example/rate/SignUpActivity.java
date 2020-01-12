@@ -41,12 +41,6 @@ public class SignUpActivity extends AppCompatActivity {
     DatabaseReference drStudents, drTeachers;
     String strID, strName, strEmail, strPassword, strvPassword;
     boolean isExist = false;
-    private NotificationManagerCompat notificationManager;
-
-    public void sendOnChannel1(View v) {
-        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_1_ID).setSmallIcon(R.drawable.ic_sms).setContentTitle("מרצה חדש").setContentText("יש מרצה חדש שרוצה להירשם").setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_MESSAGE).build();
-        notificationManager.notify(1, notification);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +50,6 @@ public class SignUpActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
         }
         setContentView(R.layout.activity_sign_up);
-        notificationManager = NotificationManagerCompat.from(this);
         firebaseAuth = firebaseAuth.getInstance();
         fd = FirebaseDatabase.getInstance();
         drStudents = fd.getReference("students");

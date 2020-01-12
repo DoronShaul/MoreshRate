@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class RateActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     EditText etSearch;
     ValueEventListener vel;
+    Query qCourseName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,7 @@ public class RateActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
                 while (it.hasNext()) {
-                    courses.add(it.next().getKey());
+                    courses.add(it.next().child("courseName").getValue().toString());
                 }
             }
 

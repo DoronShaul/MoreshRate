@@ -140,9 +140,13 @@ public class MainActivity extends AppCompatActivity {
                                     Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
                                     while (it.hasNext()) {
                                         DataSnapshot node = it.next();
-                                        if (node.child("userID").getValue().toString().equals(fbUser.getUid())) {
-                                            isTeacher = true;
-                                            break;
+                                        try {
+                                            if (node.child("userID").getValue().toString().equals(fbUser.getUid())) {
+                                                isTeacher = true;
+                                                break;
+                                            }
+                                        } catch (NullPointerException e) {
+                                            e.printStackTrace();
                                         }
                                     }
                                     if (isTeacher) { //if the user found in the teachers database.
