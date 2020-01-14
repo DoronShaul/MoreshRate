@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.rate">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -10,8 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddCourseActivity"></activity>
-        <activity android:name=".AdminActivity"></activity>
+        <activity android:name=".StudentProfileActivity"></activity>
+        <activity android:name=".TeacherProfileActivity" />
+        <activity android:name=".AddCourseActivity" />
+        <activity android:name=".AdminActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".Rate2Activity" />
         <activity android:name=".RateActivity" />
