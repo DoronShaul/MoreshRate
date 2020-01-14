@@ -40,7 +40,6 @@ public class RateActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     EditText etSearch;
     ValueEventListener vel;
-    Query qCourseName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +57,6 @@ public class RateActivity extends AppCompatActivity {
         etSearch = (EditText) findViewById(R.id.editText7);
         firebaseDatabase = firebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference("courses");
-        etSearch.requestFocus();
 
         adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, courses);
         lvCourses.setAdapter(adapter);
@@ -92,6 +90,7 @@ public class RateActivity extends AppCompatActivity {
                 Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
                 while (it.hasNext()) {
                     courses.add(it.next().child("courseName").getValue().toString());
+                    adapter.notifyDataSetChanged();
                 }
             }
 
