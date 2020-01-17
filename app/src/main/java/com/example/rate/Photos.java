@@ -1,14 +1,23 @@
 package com.example.rate;
 
+/**
+ * this class represents a profile picture of a user.
+ */
 public class Photos {
     private String userID;
     private String imageData;
 
+    /**
+     * default constructor.
+     */
     Photos() {
         this.imageData = "";
         this.userID = "";
     }
 
+    /**
+     * a constructor.
+     */
     Photos(String uID, String iData) {
         this.userID = uID;
         this.imageData = iData;

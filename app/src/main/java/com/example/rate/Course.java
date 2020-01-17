@@ -13,6 +13,9 @@ public class Course {
     private double totalAvg;
     private boolean isMust;
 
+    /**
+     * default constructor.
+     */
     public Course() {
         this.courseName = "";
         this.teacherID = "";
@@ -24,7 +27,9 @@ public class Course {
         this.isMust = true;
     }
 
-
+    /**
+     * a constructor.
+     */
     public Course(String courseName, String teacherID, boolean must) {
         this.courseName = courseName;
         this.teacherID = teacherID;
@@ -36,6 +41,9 @@ public class Course {
         this.isMust = must;
     }
 
+    /**
+     * copy constructor.
+     */
     public Course(Course other) {
         this.courseName = other.getCourseName();
         this.teacherID = other.getTeacherID();

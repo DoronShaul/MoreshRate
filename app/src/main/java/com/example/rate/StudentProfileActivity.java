@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,19 +52,15 @@ import java.util.Iterator;
 
 public class StudentProfileActivity extends AppCompatActivity {
     public static final int CAMERA_REQUEST = 1;
-    Button btnCamera, btnLogout, btnBack;
+    Button btnCamera, btnLogout, btnBack, btnHome;
     FirebaseAuth firebaseAuth;
     CircularImageView civProfilePic;
-    TextView tvName;
-    String getStudentName;
+    TextView tvName, tvRatedCourses;
     ListView lvStudentRatings;
     DatabaseReference drPhotos, drStudents, drRatings, drCourses, drMain;
     ArrayAdapter<String> adapter;
     ArrayList<String> coursesRated;
-    Query qUserRatings, qStudentName, qCourseID;
-    ValueEventListener vel;
-    ProgressBar progressBar;
-    MyTask myTask;
+    Query qUserRatings, qStudentName, qCourseID, qUserID;
 
 
     @Override
@@ -76,6 +73,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         } catch (NullPointerException e) {
         }
         btnCamera = findViewById(R.id.addPhoto);
+        btnHome = findViewById(R.id.studentProfileHome);
         drPhotos = FirebaseDatabase.getInstance().getReference("photos");
         drStudents = FirebaseDatabase.getInstance().getReference("students");
         drRatings = FirebaseDatabase.getInstance().getReference("ratings");
@@ -86,15 +84,55 @@ public class StudentProfileActivity extends AppCompatActivity {
         firebaseAuth = firebaseAuth.getInstance();
         civProfilePic = findViewById(R.id.circularImageView);
         tvName = findViewById(R.id.studentName);
+        tvRatedCourses = findViewById(R.id.tvRatedCourses);
         lvStudentRatings = findViewById(R.id.listViewStudent);
         coursesRated = new ArrayList<>();
         adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, coursesRated);
         lvStudentRatings.setAdapter(adapter);
-        progressBar = findViewById(R.id.progressBar);
-        myTask = new MyTask();
-        myTask.execute();
+
+        //finds all the ratings of the current user and adds it to the listView.
+        qUserRatings = drRatings.orderByChild("userID").equalTo(firebaseAuth.getCurrentUser().getUid());
+        qUserRatings.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String courseID;
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                while (it.hasNext()) {
+                    DataSnapshot node = it.next();
+                    courseID = node.child("courseID").getValue().toString();
+
+                    //finds the course of the specific rating.
+                    qCourseID = drCourses.orderByKey().equalTo(courseID);
+                    addRating(qCourseID, adapter, coursesRated);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        //gets the name of the current user and displays it.
+        qStudentName = drStudents.orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid());
+        getUserName(qStudentName, tvName);
 
 
+        //gets the profile photo of the user if he has one.
+        qUserID = drPhotos.orderByChild("userID").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        getProfileImage(qUserID, civProfilePic);
+
+        btnHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(StudentProfileActivity.this, HomeActivity.class);
+                startActivity(i);
+                finish();
+            }
+        });
+
+        //this listener opens the phone's camera.
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +140,7 @@ public class StudentProfileActivity extends AppCompatActivity {
             }
         });
 
+        //this listener make sure that the user wants to logout and if he does it makes the logout.
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,6 +174,7 @@ public class StudentProfileActivity extends AppCompatActivity {
             }
         });
 
+        //back button.
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,6 +195,10 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * this method opens up the phone's camera.
+     * @param v
+     */
     public void openCamera(View v) {
         Intent newIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(newIntent, CAMERA_REQUEST);
@@ -214,114 +258,89 @@ public class StudentProfileActivity extends AppCompatActivity {
         });
     }
 
-    private class MyTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            //finds all the ratings of the current user and adds it to the listView.
-            qUserRatings = drRatings.orderByChild("userID").equalTo(firebaseAuth.getCurrentUser().getUid());
-            qUserRatings.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                    while (it.hasNext()) {
-                        DataSnapshot node = it.next();
-                        String courseID = node.child("courseID").getValue().toString();
-                        //finds the course of the specific rating.
-                        qCourseID = drCourses.orderByKey().equalTo(courseID);
-                        qCourseID.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                                if (it.hasNext()) {
-                                    DataSnapshot node = it.next();
-                                    String courseName = node.child("courseName").getValue().toString();
-                                    if (!coursesRated.contains(courseName)) {
-                                        coursesRated.add(0, courseName);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
+    /**
+     * this method gets the user's profile picture, if he has one in the database.
+     * @param q -
+     * @param civ
+     */
+    private static void getProfileImage(Query q, final CircularImageView civ) {
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                //if the user already has a photo.
+                if (it.hasNext()) {
+                    DataSnapshot node = it.next();
+                    String imageData = node.child("imageData").getValue().toString();
+                    try {
+                        Bitmap bitmap = decodeFromFirebaseBase64(imageData);
+                        civ.setImageBitmap(bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
-            });
-
-            //gets the name of the current user and displays it.
-            qStudentName = drStudents.orderByKey().equalTo(firebaseAuth.getCurrentUser().getUid());
-            qStudentName.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                    if (it.hasNext()) {
-                        DataSnapshot node = it.next();
-                        getStudentName = node.child("studentName").getValue().toString();
-                        tvName.setText(getStudentName);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            //gets the profile photo of the user if he has one.
-            Query qUserID = drPhotos.orderByChild("userID").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
-            qUserID.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                    //if the user already has a photo.
-                    if (it.hasNext()) {
-                        DataSnapshot node = it.next();
-                        String imageData = node.child("imageData").getValue().toString();
-                        try {
-                            Bitmap bitmap = decodeFromFirebaseBase64(imageData);
-                            civProfilePic.setImageBitmap(bitmap);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
-            return null;
-
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-            progressBar.getProgress();
-
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-        }
+            }
+        });
     }
+
+    /**
+     * this method gets the user name from the database.
+     * @param q
+     * @param tv
+     */
+    private static void getUserName(Query q, final TextView tv) {
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String getStudentName;
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                if (it.hasNext()) {
+                    DataSnapshot node = it.next();
+                    getStudentName = node.child("studentName").getValue().toString();
+                    tv.setText(getStudentName);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    /**
+     * this method adds the rating from the database to the arrayList of the listView, and updates the arrayAdapter of the listView.
+     * @param q
+     * @param aa
+     * @param al
+     */
+    private static void addRating(Query q, final ArrayAdapter<String> aa, final ArrayList<String> al) {
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String courseName;
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                if (it.hasNext()) {
+                    DataSnapshot node = it.next();
+                    courseName = node.child("courseName").getValue().toString();
+                    if (!al.contains(courseName)) {
+                        al.add(0, courseName);
+                        aa.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
 
 }

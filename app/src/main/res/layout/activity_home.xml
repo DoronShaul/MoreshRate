@@ -47,7 +47,7 @@
         android:layout_marginTop="17dp"
         android:layout_marginEnd="306dp"
         android:layout_marginRight="306dp"
-        android:background="@drawable/logout"
+        android:background="@drawable/account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

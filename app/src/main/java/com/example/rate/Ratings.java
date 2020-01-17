@@ -11,6 +11,9 @@ public class Ratings {
     private String comment;
     private String userID;
 
+    /**
+     * default constructor.
+     */
     public Ratings() {
         this.courseID = "";
         this.teacherRating = 0;
@@ -20,14 +23,9 @@ public class Ratings {
         userID="";
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
+    /**
+     * a constructor.
+     */
     public Ratings(String id, String comment, int teacher, int course, int test, String userID) {
         this.courseID = id;
         this.comment = comment;
@@ -37,6 +35,13 @@ public class Ratings {
         this.userID = userID;
     }
 
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 
     public void setCourseID(String courseID) {
         this.courseID = courseID;
