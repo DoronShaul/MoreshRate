@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Iterator;
 
 public class AddCourseActivity extends AppCompatActivity {
-    Button btnBack, btnLogout, btnAddCourse;
+    Button btnBack, btnAccount, btnAddCourse;
     EditText etAddCourse, etAddTeacher;
     RadioButton rbYes, rbNo;
     RadioGroup rgAttendance;
@@ -46,7 +46,7 @@ public class AddCourseActivity extends AppCompatActivity {
         }
 
         btnBack = findViewById(R.id.addCourseBackBtn);
-        btnLogout = findViewById(R.id.addCourseLogoutBtn);
+        btnAccount = findViewById(R.id.addCourseAccountBtn);
         btnAddCourse = findViewById(R.id.button14);
         etAddCourse = findViewById(R.id.editText9);
         etAddTeacher = findViewById(R.id.editText10);
@@ -131,14 +131,11 @@ public class AddCourseActivity extends AppCompatActivity {
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    firebaseAuth.signOut();
-                    Intent i = new Intent(AddCourseActivity.this, MainActivity.class);
-                    //terminates all activities on the stack.
-                    finishAffinity();
+                    Intent i = new Intent(AddCourseActivity.this, TeacherProfileActivity.class);
                     startActivity(i);
 
                 } catch (Exception e) {

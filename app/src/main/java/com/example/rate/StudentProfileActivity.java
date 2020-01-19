@@ -128,7 +128,7 @@ public class StudentProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(StudentProfileActivity.this, HomeActivity.class);
                 startActivity(i);
-                finish();
+                finishAffinity();
             }
         });
 
@@ -154,7 +154,7 @@ public class StudentProfileActivity extends AppCompatActivity {
                                     firebaseAuth.getInstance().signOut();
                                     Intent i = new Intent(StudentProfileActivity.this, MainActivity.class);
                                     startActivity(i);
-                                    finish();
+                                    finishAffinity();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

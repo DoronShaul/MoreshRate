@@ -37,7 +37,7 @@ public class Rate2Activity extends AppCompatActivity {
     String courseName, courseID, userID, comment, studentName;
     TextView tvCourse;
     EditText etComment;
-    Button btnBack, btnLogout, btnRate;
+    Button btnBack, btnAccount, btnRate;
     RatingBar rbCourse, rbTeacher, rbTest;
     FirebaseDatabase mDatabase;
     DatabaseReference drRating, drCourses, drStudent;
@@ -104,7 +104,7 @@ public class Rate2Activity extends AppCompatActivity {
         tvCourse = findViewById(R.id.textView4);
         etComment = findViewById(R.id.editText8);
         btnBack = findViewById(R.id.button12);
-        btnLogout = findViewById(R.id.button11);
+        btnAccount = findViewById(R.id.btnRate2Account);
         btnRate = findViewById(R.id.button13);
         rbCourse = findViewById(R.id.ratingBar);
         rbTeacher = findViewById(R.id.ratingBar1);
@@ -195,9 +195,6 @@ public class Rate2Activity extends AppCompatActivity {
                     });
 
 
-
-
-
                     sendOnChannel1(v); //sends notification.
 
 
@@ -219,19 +216,11 @@ public class Rate2Activity extends AppCompatActivity {
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    firebaseAuth.signOut();
-                    Intent i = new Intent(Rate2Activity.this, MainActivity.class);
-                    //terminates all activities on the stack.
-                    finishAffinity();
-                    startActivity(i);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Intent i = new Intent(Rate2Activity.this, StudentProfileActivity.class);
+                startActivity(i);
             }
         });
 

@@ -34,7 +34,7 @@ public class RateActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
-    Button btnBack, btnLogout;
+    Button btnBack, btnAccount;
     ListView lvCourses;
     ArrayList<String> courses = new ArrayList<>();
     ArrayAdapter<String> adapter;
@@ -52,7 +52,7 @@ public class RateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_rate);
         firebaseAuth = firebaseAuth.getInstance();
         btnBack = findViewById(R.id.button7);
-        btnLogout = findViewById(R.id.button9);
+        btnAccount = findViewById(R.id.btnRateAccount);
         lvCourses = (ListView) findViewById(R.id.listView);
         etSearch = (EditText) findViewById(R.id.editText7);
         firebaseDatabase = firebaseDatabase.getInstance();
@@ -117,14 +117,11 @@ public class RateActivity extends AppCompatActivity {
         /**
          * this method takes the user to the main activity after clicking the logout button.
          */
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    firebaseAuth.getInstance().signOut();
-                    Intent i = new Intent(RateActivity.this, MainActivity.class);
-                    //terminates all activities on the stack.
-                    finishAffinity();
+                    Intent i = new Intent(RateActivity.this, StudentProfileActivity.class);
                     startActivity(i);
 
                 } catch (Exception e) {

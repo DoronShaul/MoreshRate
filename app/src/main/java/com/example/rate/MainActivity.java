@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
              * this method checks if the user exists. if it does it goes to the home page. otherwise, goes to the main page and request a login.
              */
             @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            public void onAuthStateChanged(@NonNull final FirebaseAuth firebaseAuth) {
                 final FirebaseUser fbUser = firebaseAuth.getCurrentUser();
                 Intent extra = getIntent();
                 Bundle b = extra.getExtras();

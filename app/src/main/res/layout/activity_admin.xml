@@ -8,21 +8,6 @@
     android:background="@drawable/back"
     tools:context=".AdminActivity">
 
-    <Button
-        android:id="@+id/btnAdminSearch"
-        android:layout_width="228dp"
-        android:layout_height="89dp"
-        android:layout_marginStart="90dp"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="370dp"
-        android:layout_marginEnd="90dp"
-        android:layout_marginRight="90dp"
-        android:background="@drawable/btn1"
-        android:text="חפש במאגר"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btnAddCourse"
@@ -30,49 +15,18 @@
         android:layout_height="89dp"
         android:layout_marginStart="90dp"
         android:layout_marginLeft="90dp"
-        android:layout_marginTop="473dp"
+        android:layout_marginTop="292dp"
         android:layout_marginEnd="90dp"
         android:layout_marginRight="90dp"
         android:background="@drawable/btn"
         android:text="הוסף קורס"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnEditCourse"
-        android:layout_width="228dp"
-        android:layout_height="89dp"
-        android:layout_marginStart="90dp"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="576dp"
-        android:layout_marginEnd="90dp"
-        android:layout_marginRight="90dp"
-        android:background="@drawable/btn1"
-        android:text="ערוך קורס"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnAdminRate"
-        android:layout_width="228dp"
-        android:layout_height="89dp"
-        android:layout_marginStart="90dp"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="267dp"
-        android:layout_marginEnd="90dp"
-        android:layout_marginRight="90dp"
-        android:text="Rate"
-        android:background="@drawable/btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/btnAdminLogout"
+        android:id="@+id/btnAdminAccount"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="17dp"
@@ -80,7 +34,7 @@
         android:layout_marginTop="17dp"
         android:layout_marginEnd="306dp"
         android:layout_marginRight="306dp"
-        android:background="@drawable/logout"
+        android:background="@drawable/account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
