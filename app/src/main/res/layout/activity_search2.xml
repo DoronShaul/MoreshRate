@@ -72,15 +72,16 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="176dp"
         android:layout_marginLeft="176dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="176dp"
         android:layout_marginRight="176dp"
+        android:gravity="center"
         android:textColor="#FAFAFA"
         android:textSize="20dp"
-        android:gravity="center"
-        android:layout_marginTop="55dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search2Logo" />
+        app:layout_constraintTop_toBottomOf="@+id/search2CourseName" />
 
     <RatingBar
         android:id="@+id/searchRatingBar"
@@ -338,6 +339,8 @@
         android:layout_width="353dp"
         android:layout_height="197dp"
         android:layout_marginTop="35dp"
+        android:divider="#5882FA"
+        android:dividerHeight="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.155"
         app:layout_constraintStart_toStartOf="parent"

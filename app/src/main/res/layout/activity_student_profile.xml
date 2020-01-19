@@ -92,12 +92,12 @@
 
     <TextView
         android:id="@+id/studentName"
-        android:layout_width="162dp"
-        android:layout_height="53dp"
+        android:layout_width="358dp"
+        android:layout_height="48dp"
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:textColor="#FAFAFA"
-        android:textSize="40dp"
+        android:textSize="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circularImageView" />
@@ -107,6 +107,8 @@
         android:layout_width="332dp"
         android:layout_height="167dp"
         android:layout_marginTop="499dp"
+        android:divider="#5882FA"
+        android:dividerHeight="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
