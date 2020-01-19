@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -102,6 +103,18 @@ public class TeacherProfileActivity extends AppCompatActivity {
         //gets the profile photo of the user if he has one.
         qUserID = drPhotos.orderByChild("userID").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid());
         getProfileImage(qUserID, civProfilePic);
+
+        lvTeacherCourses.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                String courseName = item.toString();
+                Intent i = new Intent(TeacherProfileActivity.this, Search2Activity.class);
+                i.putExtra("courseName", courseName);
+                i.putExtra("type", "teacher");
+                startActivity(i);
+            }
+        });
 
 
         btnHome.setOnClickListener(new View.OnClickListener() {

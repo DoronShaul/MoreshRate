@@ -34,16 +34,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class Rate2Activity extends AppCompatActivity {
-    String courseName, courseID, userID, comment, studentName;
-    TextView tvCourse;
+    String courseName, courseID, userID, comment, studentName, teacherID, teacherName;
+    TextView tvCourse, tvTeacherName;
     EditText etComment;
     Button btnBack, btnAccount, btnRate;
     RatingBar rbCourse, rbTeacher, rbTest;
     FirebaseDatabase mDatabase;
-    DatabaseReference drRating, drCourses, drStudent;
+    DatabaseReference drRating, drCourses, drStudent, drTeachers;
     FirebaseAuth firebaseAuth;
     Ratings rat;
-    Query qCourseID, qStudentName;
+    Query qCourseID, qStudentName, qTeacherID, qTeacherName;
     final static String adminDoron = "doronsds@gmail.com";
     private NotificationManagerCompat notificationManager;
 
@@ -100,8 +100,10 @@ public class Rate2Activity extends AppCompatActivity {
         drCourses = mDatabase.getReference("courses");
         drRating = mDatabase.getReference("ratings");
         drStudent = mDatabase.getReference("students");
+        drTeachers = mDatabase.getReference("teachers");
         setContentView(R.layout.activity_rate2);
         tvCourse = findViewById(R.id.textView4);
+        tvTeacherName = findViewById(R.id.rate2TeacherName);
         etComment = findViewById(R.id.editText8);
         btnBack = findViewById(R.id.button12);
         btnAccount = findViewById(R.id.btnRate2Account);
@@ -194,7 +196,6 @@ public class Rate2Activity extends AppCompatActivity {
                         }
                     });
 
-
                     sendOnChannel1(v); //sends notification.
 
 
@@ -213,6 +214,40 @@ public class Rate2Activity extends AppCompatActivity {
 
                     }
                 }
+            }
+        });
+
+        qTeacherID = drCourses.orderByChild("courseName").equalTo(courseName);
+        qTeacherID.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                if (it.hasNext()) {
+                    DataSnapshot node = it.next();
+                    teacherID = node.child("teacherID").getValue().toString();
+                }
+                qTeacherName = drTeachers.orderByKey().equalTo(teacherID);
+                qTeacherName.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                        if (it.hasNext()) {
+                            DataSnapshot node = it.next();
+                            teacherName = node.child("teacherName").getValue().toString();
+                        }
+                        tvTeacherName.setText(teacherName);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 

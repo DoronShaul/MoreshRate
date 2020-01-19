@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,10 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+
+import static java.lang.Double.parseDouble;
 
 public class SearchActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
@@ -37,6 +42,7 @@ public class SearchActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     EditText etSearch;
     ValueEventListener vel;
+    Double toBeTruncated, truncatedDouble;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +94,11 @@ public class SearchActivity extends AppCompatActivity {
                 while (it.hasNext()) {
                     DataSnapshot node = it.next();
                     coursesTotal.add(node.child("totalAvg").getValue(Double.class));
-                    courses.add(node.child("courseName").getValue().toString());
+                    //setPrecision.
+                    toBeTruncated = node.child("totalAvg").getValue(Double.class);
+                    truncatedDouble = BigDecimal.valueOf(toBeTruncated).setScale(1, RoundingMode.HALF_UP).doubleValue();
+                    //adds courses to arrayList.
+                    courses.add(node.child("courseName").getValue().toString()+" - "+truncatedDouble+"/5");
                     sort(courses, coursesTotal);
                     adapter.notifyDataSetChanged();
 
@@ -108,9 +118,11 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Object item = parent.getItemAtPosition(position);
-                String courseName = item.toString();
+                int index = item.toString().indexOf("-");
+                String courseName = item.toString().substring(0, index-1);
                 Intent i = new Intent(SearchActivity.this, Search2Activity.class);
                 i.putExtra("courseName", courseName);
+                i.putExtra("type", "student");
                 startActivity(i);
             }
         });
@@ -161,4 +173,5 @@ public class SearchActivity extends AppCompatActivity {
 
         }
     }
+
 }

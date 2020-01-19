@@ -39,8 +39,8 @@
 
     <ListView
         android:id="@+id/listView"
-        android:layout_width="409dp"
-        android:layout_height="330dp"
+        android:layout_width="413dp"
+        android:layout_height="522dp"
         android:divider="#5882FA"
         android:dividerHeight="1dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +66,7 @@
         android:id="@+id/editText7"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="150dp"
         android:autofillHints="search"
         android:backgroundTint="#FAFAFA"
         android:ems="10"
@@ -76,6 +76,7 @@
         android:textColorHint="#FAFAFA"
         app:layout_constraintBottom_toTopOf="@+id/listView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

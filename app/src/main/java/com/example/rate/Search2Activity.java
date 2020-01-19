@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,20 +25,24 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import static java.lang.Double.parseDouble;
 
 public class Search2Activity extends AppCompatActivity {
-    String courseName, teacherName, teacherID;
+    String courseName, teacherName, teacherID, type, courseID;
     TextView tvCourse, tvAttendance, tvCourseRating, tvTeacherRating, tvTestRating, tvTotalRating, tvTeacherName;
     Button btnBack, btnAccount;
     RatingBar rbCourse, rbTeacher, rbTest, rbTotal;
     FirebaseDatabase mDatabase;
-    DatabaseReference drTeachers, drCourses;
+    DatabaseReference drTeachers, drCourses, drRatings;
     FirebaseAuth firebaseAuth;
-    Query qcourseID, qTeacherName, qTeacherID;
+    Query qcourseID, qTeacherName, qTeacherID, qComments;
     Double toBeTruncated, truncatedDouble;
+    ListView lvComments;
+    ArrayList<String> commentsArray = new ArrayList<>();
+    ArrayAdapter<String> adapter;
     final static String adminDoron = "doronsds@gmail.com";
 
     @Override
@@ -61,15 +68,20 @@ public class Search2Activity extends AppCompatActivity {
         rbTeacher = findViewById(R.id.searchRatingBar1);
         rbTest = findViewById(R.id.searchRatingBar2);
         rbTotal = findViewById(R.id.searchRatingBar3);
+        lvComments = findViewById(R.id.listViewSearch2);
+        adapter = new ArrayAdapter<>(this, R.layout.courses_info, R.id.textView3, commentsArray);
+        lvComments.setAdapter(adapter);
         mDatabase = FirebaseDatabase.getInstance();
         drCourses = mDatabase.getReference("courses");
         drTeachers = mDatabase.getReference("teachers");
+        drRatings = mDatabase.getReference("ratings");
 
 
         Intent i = getIntent();
         Bundle b = i.getExtras();
         if (b != null) {
             courseName = b.getString("courseName");
+            type = b.getString("type");
             tvCourse.setText(courseName);
         }
 
@@ -80,6 +92,28 @@ public class Search2Activity extends AppCompatActivity {
                 Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
                 if (it.hasNext()) {
                     DataSnapshot node = it.next();
+                    courseID = node.getKey();
+                    qComments = drRatings.orderByChild("courseID").equalTo(courseID);
+                    qComments.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
+                            while (it.hasNext()) {
+                                DataSnapshot node = it.next();
+                                if (!(node.child("comment").getValue().toString().equals(""))) {
+                                    commentsArray.add("'' " + node.child("comment").getValue().toString() + " ''");
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
                     rbCourse.setRating(Float.parseFloat(node.child("courseAvg").getValue().toString()));
                     rbTeacher.setRating(node.child("teacherAvg").getValue(Float.class));
                     rbTest.setRating(node.child("testAvg").getValue(Float.class));
@@ -92,19 +126,19 @@ public class Search2Activity extends AppCompatActivity {
 
                     toBeTruncated = parseDouble(node.child("courseAvg").getValue().toString());
                     truncatedDouble = BigDecimal.valueOf(toBeTruncated).setScale(1, RoundingMode.HALF_UP).doubleValue();
-                    tvCourseRating.setText(truncatedDouble.toString()+"/5");
+                    tvCourseRating.setText(truncatedDouble.toString() + "/5");
 
                     toBeTruncated = parseDouble(node.child("teacherAvg").getValue().toString());
                     truncatedDouble = BigDecimal.valueOf(toBeTruncated).setScale(1, RoundingMode.HALF_UP).doubleValue();
-                    tvTeacherRating.setText(truncatedDouble.toString()+"/5");
+                    tvTeacherRating.setText(truncatedDouble.toString() + "/5");
 
                     toBeTruncated = parseDouble(node.child("testAvg").getValue().toString());
                     truncatedDouble = BigDecimal.valueOf(toBeTruncated).setScale(1, RoundingMode.HALF_UP).doubleValue();
-                    tvTestRating.setText(truncatedDouble.toString()+"/5");
+                    tvTestRating.setText(truncatedDouble.toString() + "/5");
 
                     toBeTruncated = parseDouble(node.child("totalAvg").getValue().toString());
                     truncatedDouble = BigDecimal.valueOf(toBeTruncated).setScale(1, RoundingMode.HALF_UP).doubleValue();
-                    tvTotalRating.setText(truncatedDouble.toString()+"/5");
+                    tvTotalRating.setText(truncatedDouble.toString() + "/5");
 
                 }
             }
@@ -120,7 +154,7 @@ public class Search2Activity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                if(it.hasNext()){
+                if (it.hasNext()) {
                     DataSnapshot node = it.next();
                     teacherID = node.child("teacherID").getValue().toString();
                 }
@@ -129,7 +163,7 @@ public class Search2Activity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Iterator<DataSnapshot> it = dataSnapshot.getChildren().iterator();
-                        if(it.hasNext()){
+                        if (it.hasNext()) {
                             DataSnapshot node = it.next();
                             teacherName = node.child("teacherName").getValue().toString();
                         }
@@ -159,10 +193,16 @@ public class Search2Activity extends AppCompatActivity {
         btnAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Search2Activity.this, StudentProfileActivity.class);
+                Intent i;
+                if (type.equals("teacher")) {
+                    i = new Intent(Search2Activity.this, TeacherProfileActivity.class);
+                } else {
+                    i = new Intent(Search2Activity.this, StudentProfileActivity.class);
+                }
                 startActivity(i);
             }
         });
 
     }
+
 }

@@ -14,18 +14,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".Search2Activity"></activity>
-        <activity android:name=".StudentProfileActivity" />
-        <activity android:name=".TeacherProfileActivity" />
-        <activity android:name=".AddCourseActivity" />
-        <activity android:name=".AdminActivity" />
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".Rate2Activity" />
-        <activity android:name=".RateActivity" />
-        <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".TeacherAddCourseActivity"></activity>
+        <activity
+            android:name=".Search2Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".StudentProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TeacherProfileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddCourseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AdminActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Rate2Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SignUpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

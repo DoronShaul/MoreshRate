@@ -34,20 +34,26 @@ public class AdminActivity extends AppCompatActivity {
         btnAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 try {
                     Intent i = new Intent(AdminActivity.this, TeacherProfileActivity.class);
                     startActivity(i);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
         });
 
         btnAddCourse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(AdminActivity.this,AddCourseActivity.class);
+                Intent i;
+                if (firebaseAuth.getCurrentUser().getEmail().equals("doronsds@gmail.com")) {
+                    i = new Intent(AdminActivity.this, AddCourseActivity.class);
+                } else {
+                    i = new Intent(AdminActivity.this, TeacherAddCourseActivity.class);
+                }
                 startActivity(i);
             }
         });
