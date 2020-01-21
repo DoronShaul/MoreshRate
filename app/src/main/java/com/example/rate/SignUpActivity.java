@@ -39,6 +39,8 @@ public class SignUpActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase fd;
     DatabaseReference drStudents, drTeachers;
+    Students newStudent;
+    Teachers newTeacher;
     String strID, strName, strEmail, strPassword, strvPassword;
     boolean isExist = false;
 
@@ -108,7 +110,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                     if (btnStudent.isChecked()) { //if the user sign up as a student.
-                                        Students newStudent = new Students(strName);
+                                        newStudent = new Students(strName);
                                         drStudents.child(strID).setValue(newStudent).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -155,7 +157,7 @@ public class SignUpActivity extends AppCompatActivity {
                                                     }
                                                 }
                                                 if (!isExist) { //if the teacher is not exist in the database.
-                                                    Teachers newTeacher = new Teachers(strName, strID);
+                                                    newTeacher = new Teachers(strName, strID);
                                                     drTeachers.push().setValue(newTeacher).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                         @Override
                                                         public void onComplete(@NonNull Task<Void> task) {

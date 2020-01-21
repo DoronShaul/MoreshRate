@@ -84,7 +84,7 @@ public class AddCourseActivity extends AppCompatActivity {
                             if (it.hasNext()) { //if the teacher already exists
                                 DataSnapshot node = it.next();
                                 teacherID = node.getKey();
-                                Course newCourse = new Course(courseName, teacherID, isMust); //creating the course
+                                newCourse = new Course(courseName, teacherID, isMust); //creating the course
                                 drCourses.push().setValue(newCourse); //adding the course to the database
                             } else {
                                 Teachers newTeacher = new Teachers(teacherName, null); //creating new teacher with no userId
@@ -101,7 +101,7 @@ public class AddCourseActivity extends AppCompatActivity {
                                                     if (it.hasNext()) {
                                                         DataSnapshot node = it.next();
                                                         teacherID = node.getKey(); //Extracts the teacherID
-                                                        Course newCourse = new Course(courseName, teacherID, isMust); //creating the course
+                                                        newCourse = new Course(courseName, teacherID, isMust); //creating the course
                                                         drCourses.push().setValue(newCourse); //adding the course to the database
                                                     }
                                                 }

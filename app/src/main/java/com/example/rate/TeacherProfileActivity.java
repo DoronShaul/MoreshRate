@@ -42,6 +42,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
     CircularImageView civProfilePic;
     TextView tvName, tvMyCourses;
     ListView lvTeacherCourses;
+    Photos newPhoto;
     DatabaseReference drPhotos, drTeachers, drCourses, drMain;
     ArrayAdapter<String> adapter;
     ArrayList<String> myCourses;
@@ -231,7 +232,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
                     update.put("imageData", imageEncoded);
                     drPhotos.child(node.getKey()).updateChildren(update);
                 } else {
-                    Photos newPhoto = new Photos(FirebaseAuth.getInstance().getCurrentUser().getUid(), imageEncoded);
+                    newPhoto = new Photos(FirebaseAuth.getInstance().getCurrentUser().getUid(), imageEncoded);
                     drPhotos.push().setValue(newPhoto);
                 }
             }
